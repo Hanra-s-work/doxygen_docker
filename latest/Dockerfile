@@ -105,6 +105,7 @@ RUN cecho "${c_cyan}Installing Doxygen dependencies ...${c_reset}" && \
     qt5-qttools \
     perl-Digest-MD5 \
     qt5-qtbase-devel \
+    qt5-qtsvg-devel \
     qt5-qttools-devel \
     qt5-qttools-static \
     glibc-all-langpacks && \
