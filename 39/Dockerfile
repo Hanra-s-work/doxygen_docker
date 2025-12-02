@@ -123,64 +123,26 @@ RUN cecho "${c_cyan}Installing texlive ...${c_reset}" \
     && cecho "${c_green}Texlive installed successfully${c_reset}"
 
 
-# Install ghostscript
-RUN cecho "${c_cyan}Installing ghostscript ...${c_reset}" \
+# Install Ghostscript and GhostPDL (download once, reuse archives)
+RUN cecho "${c_cyan}Installing Ghostscript and GhostPDL (cached downloads)...${c_reset}" \
     && cd /tmp \
-    && mkdir ghostscript_installation \
-    && cd ghostscript_installation \
-    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostscript-${ghost_version}.tar.gz \
-    && tar -xvf ghostscript-${ghost_version}.tar.gz \
+    && mkdir -p /tmp/downloads /tmp/ghostscript_installation \
+    && cd /tmp/downloads \
+    && curl -L -o ghostscript-${ghost_version}.tar.gz https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostscript-${ghost_version}.tar.gz \
+    && curl -L -o ghostpdl-${ghost_version}.tar.gz https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostpdl-${ghost_version}.tar.gz \
+    && cd /tmp/ghostscript_installation \
+    && tar -xvf /tmp/downloads/ghostscript-${ghost_version}.tar.gz \
     && cd ghostscript-${ghost_version} \
     && ./configure \
-    && make \
+    && make -j$(nproc) \
     && make install \
-    && cd ../.. \
-    && cecho "${c_green}Ghostscript installed successfully${c_reset}"
-
-# Install ghostpcl
-RUN cecho "${c_cyan}Installing ghostpcl ...${c_reset}" \
-    && cd /tmp \
-    && cd ghostscript_installation \
-    && mkdir ghost_pcl \
-    && cd ghost_pcl \
-    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostpdl-${ghost_version}.tar.gz \
-    && tar -xvf ghostpdl-${ghost_version}.tar.gz \
-    && cd ghostpdl-${ghost_version} \
+    && cd /tmp/ghostscript_installation \
+    && tar -xvf /tmp/downloads/ghostpdl-${ghost_version}.tar.gz -C /tmp/ghostscript_installation \
+    && cd /tmp/ghostscript_installation/ghostpdl-${ghost_version} \
     && ./configure \
-    && make \
+    && make -j$(nproc) \
     && make install \
-    && cd ../../.. \
-    && cecho "${c_green}Ghostpcl installed successfully${c_reset}"
-
-# Install ghostxps
-RUN cecho "${c_cyan}Installing ghostxps ...${c_reset}" \
-    && cd /tmp \
-    && cd ghostscript_installation \
-    && mkdir ghost_xps \
-    && cd ghost_xps \
-    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostpdl-${ghost_version}.tar.gz \
-    && tar -xvf ghostpdl-${ghost_version}.tar.gz \
-    && cd ghostpdl-${ghost_version} \
-    && ./configure \
-    && make \
-    && make install \
-    && cd ../../.. \
-    && cecho "${c_green}Ghostxps installed successfully${c_reset}"
-
-# Install ghostpdl
-RUN cecho "${c_cyan}Installing ghostpdl ...${c_reset}" \
-    && cd /tmp \
-    && cd ghostscript_installation \
-    && mkdir ghost_pdl \
-    && cd ghost_pdl \
-    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostpdl-${ghost_version}.tar.gz \
-    && tar -xvf ghostpdl-${ghost_version}.tar.gz \
-    && cd ghostpdl-${ghost_version} \
-    && ./configure \
-    && make \
-    && make install \
-    && cd ../../.. \
-    && cecho "${c_green}Ghostpdl installed successfully${c_reset}"
+    && cecho "${c_green}Ghostscript and GhostPDL installed successfully${c_reset}"
 
 # Install doxygen from source
 RUN cecho "${c_cyan}Installing doxygen from source ...${c_reset}" \
