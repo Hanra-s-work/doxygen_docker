@@ -65,11 +65,8 @@ $SUDO docker container stop $CONTAINER_NAME
 $SUDO docker container rm -f $CONTAINER_NAME
 $SUDO docker volume prune -f
 
-FOLDERS=$(find . -type d)
+FOLDERS=$(find . -maxdepth 1 -type d -not -name "." -not -name ".." | sort)
 for folder in $FOLDERS; do
-    if [ ! -d "$folder" ] || [ "$folder" == "." ] || [ "$folder" == ".." ]; then
-        continue
-    fi
     build_and_publish "$folder" "$CONTAINER_FINAL_NAME" "$DOCKERFILE_PATH"
     if [ $? -ne 0 ]; then
         status=$?
