@@ -124,6 +124,8 @@ RUN cecho "${c_cyan}Installing texlive ...${c_reset}" && \
     zcat < install-tl-unx.tar.gz | tar xf - && \
     cd install-tl-*/ && \
     perl ./install-tl --no-interaction && \
+    cd /tmp && \
+    rm -rf install-tl-* install-tl-unx.tar.gz && \
     cecho "${c_green}Texlive installed successfully${c_reset}"
 
 
@@ -146,6 +148,8 @@ RUN cecho "${c_cyan}Installing Ghostscript and GhostPDL (cached downloads)...${c
     ./configure && \
     make -j$(nproc) && \
     make install && \
+    cd /tmp && \
+    rm -rf /tmp/ghostscript_installation /tmp/downloads && \
     cecho "${c_green}Ghostscript and GhostPDL installed successfully${c_reset}"
 
 # Install doxygen from source
@@ -164,7 +168,8 @@ RUN cecho "${c_cyan}Installing doxygen from source ...${c_reset}" && \
     cmake -Dbuild_doc=YES .. && \
     make docs && \
     make install  && \
-    cd ../../.. && \
+    cd /tmp && \
+    rm -rf /tmp/doxygen_installation && \
     cecho "${c_green}Doxygen installed successfully${c_reset}"
 
 # Clean up
