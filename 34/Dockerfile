@@ -11,9 +11,9 @@ FROM fedora:34
 # The environment setup
 ENV LANG=en_US.UTF-8 \
     LANGUAGE=en_US:en \
-    PATH="/usr/local/texlive/2024/bin/x86_64-linux:$PATH" \
-    ghost_version=10.03.0 \
-    doxygen_version=1.10.0 \
+    PATH="/usr/local/texlive/2025/bin/x86_64-linux:$PATH" \
+    ghost_version=10.06.0 \
+    doxygen_version=1.15.0 \
     c_green="\033[0;32m" \
     c_red="\033[0;31m" \
     c_yellow="\033[0;33m" \
@@ -128,7 +128,7 @@ RUN cecho "${c_cyan}Installing ghostscript ...${c_reset}" \
     && cd /tmp \
     && mkdir ghostscript_installation \
     && cd ghostscript_installation \
-    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10030/ghostscript-${ghost_version}.tar.gz \
+    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostscript-${ghost_version}.tar.gz \
     && tar -xvf ghostscript-${ghost_version}.tar.gz \
     && cd ghostscript-${ghost_version} \
     && ./configure \
@@ -143,7 +143,7 @@ RUN cecho "${c_cyan}Installing ghostpcl ...${c_reset}" \
     && cd ghostscript_installation \
     && mkdir ghost_pcl \
     && cd ghost_pcl \
-    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10030/ghostpdl-${ghost_version}.tar.gz \
+    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostpdl-${ghost_version}.tar.gz \
     && tar -xvf ghostpdl-${ghost_version}.tar.gz \
     && cd ghostpdl-${ghost_version} \
     && ./configure \
@@ -158,7 +158,7 @@ RUN cecho "${c_cyan}Installing ghostxps ...${c_reset}" \
     && cd ghostscript_installation \
     && mkdir ghost_xps \
     && cd ghost_xps \
-    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10030/ghostpdl-${ghost_version}.tar.gz \
+    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostpdl-${ghost_version}.tar.gz \
     && tar -xvf ghostpdl-${ghost_version}.tar.gz \
     && cd ghostpdl-${ghost_version} \
     && ./configure \
@@ -173,7 +173,7 @@ RUN cecho "${c_cyan}Installing ghostpdl ...${c_reset}" \
     && cd ghostscript_installation \
     && mkdir ghost_pdl \
     && cd ghost_pdl \
-    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10030/ghostpdl-${ghost_version}.tar.gz \
+    && curl -LO https://github.com/ArtifexSoftware/ghostpdl-downloads/releases/download/gs10060/ghostpdl-${ghost_version}.tar.gz \
     && tar -xvf ghostpdl-${ghost_version}.tar.gz \
     && cd ghostpdl-${ghost_version} \
     && ./configure \
@@ -204,15 +204,11 @@ RUN cecho "${c_cyan}Installing doxygen from source ...${c_reset}" \
 # Install PlantUML
 RUN cecho "${c_cyan}Installing PlantUML ...${c_reset}" \
     && cd /usr/local/bin \
-    && curl -LO https://github.com/plantuml/plantuml/releases/download/v1.2024.8/plantuml-1.2024.8.jar \
-    && ln -s plantuml-1.2024.8.jar plantuml.jar \
-    && echo '#!/bin/bash' > /usr/local/bin/plantuml \
-    && echo 'java -jar /usr/local/bin/plantuml.jar "$@"' >> /usr/local/bin/plantuml \
+    && curl -L -o /usr/local/bin/plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar \
+    && echo '#!/bin/sh' > /usr/local/bin/plantuml \
+    && echo 'exec java -jar /usr/local/bin/plantuml.jar "$@"' >> /usr/local/bin/plantuml \
     && chmod +x /usr/local/bin/plantuml \
-    && cecho "${c_green}PlantUML installed successfully${c_reset}" \
-    && echo "Creating a wrapper script so Doxygen can call 'plantuml'" \
-    && echo '#!/bin/sh\nexec java -jar /opt/plantuml/plantuml.jar "$@"' > /usr/local/bin/plantuml \
-    && chmod +x /usr/local/bin/plantuml
+    && cecho "${c_green}PlantUML installed successfully${c_reset}"
 
 # Clean up
 RUN echo -e "${c_cyan}Cleaning up ...${c_reset}" \
