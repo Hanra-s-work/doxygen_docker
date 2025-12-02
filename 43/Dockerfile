@@ -107,7 +107,9 @@ RUN cecho "${c_cyan}Installing Doxygen dependencies ...${c_reset}" && \
     qt5-qtbase-devel \
     qt5-qttools-devel \
     qt5-qttools-static \
-    glibc-all-langpacks && \
+    glibc-all-langpacks \
+    java-latest-openjdk \
+    java-latest-openjdk-headless && \
     cecho "${c_green}Doxygen dependencies installed successfully${c_reset}"
 
 # Install texlive
@@ -197,6 +199,16 @@ RUN cecho "${c_cyan}Installing doxygen from source ...${c_reset}" && \
     make install  && \
     cd ../../.. && \
     cecho "${c_green}Doxygen installed successfully${c_reset}"
+
+# Install PlantUML
+RUN cecho "${c_cyan}Installing PlantUML ...${c_reset}" && \
+    cd /usr/local/bin && \
+    curl -LO https://github.com/plantuml/plantuml/releases/download/v1.2024.8/plantuml-1.2024.8.jar && \
+    ln -s plantuml-1.2024.8.jar plantuml.jar && \
+    echo '#!/bin/bash' > /usr/local/bin/plantuml && \
+    echo 'java -jar /usr/local/bin/plantuml.jar "$@"' >> /usr/local/bin/plantuml && \
+    chmod +x /usr/local/bin/plantuml && \
+    cecho "${c_green}PlantUML installed successfully${c_reset}"
 
 # Clean up
 RUN echo -e "${c_cyan}Cleaning up ...${c_reset}" && \
